@@ -1,42 +1,41 @@
 <!doctype html>
 <html lang="ja" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>EikenQuest — 英検5級〜1級 学習プラットフォーム</title>
-    <meta
-      name="description"
-      content="英検5級から1級まで。1次試験・2次試験対策、単語、文法、時計（ストップウォッチ・タイマー・ポモドーロ）をひとつに。楽しく続く英検学習アプリ。"
-    />
-    <meta name="theme-color" content="#4f46e5" />
-    <link rel="manifest" href="./manifest.json" />
-    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-    <script>
-      /* Apply the saved theme before first paint to avoid a light-theme flash. */
-      (function () {
-        try {
-          var raw = localStorage.getItem("eikenquest.state.v1");
-          var pref = raw ? ((JSON.parse(raw) || {}).settings || {}).theme : "system";
-          var dark =
-            pref === "dark" ||
-            (pref === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-        } catch (e) {
-          /* keep the default light theme */
-        }
-      })();
-    </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Shippori+Mincho:wght@500;700&family=Yomogi&family=DotGothic16&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="root"></div>
-    <div id="modal-root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>EikenQuest — 英検5級〜1級 学習アプリ</title>
+  <meta name="description" content="英検5級から1級まで。1次試験・2次試験対策、単語、文法、時計（ストップウォッチ・タイマー・ポモドーロ）をひとつに。楽しく続く英検学習アプリ。" />
+  <meta name="theme-color" content="#4f46e5" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <script>
+    /* Apply the saved theme before first paint to avoid a light-theme flash. */
+    (function () {
+      try {
+        var raw = localStorage.getItem("eikenquest.state.v1");
+        var pref = raw ? ((JSON.parse(raw) || {}).settings || {}).theme : "system";
+        var dark =
+          pref === "dark" ||
+          (pref === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+      } catch (e) {
+        /* keep the default light theme */
+      }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Shippori+Mincho:wght@500;700&family=Yomogi&family=DotGothic16&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <div id="root"></div>
+  <div id="modal-root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

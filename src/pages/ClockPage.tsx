@@ -188,6 +188,8 @@ export function ClockPage() {
   const [swOn, setSwOn] = useState(sw.running);
   const [tmOn, setTmOn] = useState(tm.running);
   const [pomoOn, setPomoOn] = useState(pomo.running);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const isNativeFsRef = useRef(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const fontClass = `clock-font--${settings.clockFont || "orbitron"}`;
@@ -647,6 +649,7 @@ export function ClockPage() {
       });
       if (!ok) return;
     }
+    if (isFullscreen) void exitFullscreen();
     pauseStopwatch();
     pauseTimer();
     pausePomodoro();
@@ -661,18 +664,112 @@ export function ClockPage() {
 
   /* ---------------- Clock actions ---------------- */
 
-  const toggleFullscreen = () => {
+  const enterFullscreen = async () => {
     const stage = stageRef.current;
     if (!stage) return;
-    if (!document.fullscreenElement) {
-      const request = stage.requestFullscreen?.();
-      if (request && typeof request.catch === "function") {
-        request.catch(() => toast("このブラウザは全画面表示に対応していません", "info"));
+
+    // モバイル端末（タッチデバイスまたは画面幅が狭い環境）判定
+    const isMobile =
+      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
+      window.innerWidth <= 768;
+
+    // PC環境の場合、ブラウザのネイティブ Fullscreen API を試す
+    if (!isMobile) {
+      const req =
+        stage.requestFullscreen ||
+        (stage as any).webkitRequestFullscreen ||
+        (stage as any).mozRequestFullScreen ||
+        (stage as any).msRequestFullscreen;
+
+      if (req) {
+        try {
+          const p = req.call(stage);
+          if (p && typeof p.then === "function") {
+            await p;
+          }
+          isNativeFsRef.current = true;
+          setIsFullscreen(true);
+          return;
+        } catch (err) {
+          console.info("Native fullscreen failed or rejected, falling back to CSS fullscreen:", err);
+        }
       }
-    } else {
-      void document.exitFullscreen();
+    }
+
+    // スマホ環境、またはネイティブ全画面が非対応/拒否された場合はCSS擬似全画面
+    isNativeFsRef.current = false;
+    setIsFullscreen(true);
+  };
+
+  const exitFullscreen = async () => {
+    setIsFullscreen(false);
+    const doc = document as any;
+    const hasNative = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
+    if (hasNative || isNativeFsRef.current) {
+      isNativeFsRef.current = false;
+      try {
+        const exit =
+          doc.exitFullscreen ||
+          doc.webkitExitFullscreen ||
+          doc.mozCancelFullScreen ||
+          doc.msExitFullscreen;
+        if (exit) {
+          await exit.call(doc);
+        }
+      } catch (err) {
+        console.warn("Failed to exit native fullscreen", err);
+      }
     }
   };
+
+  const toggleFullscreen = () => {
+    const doc = document as any;
+    const hasNative = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
+    if (isFullscreen || hasNative || isNativeFsRef.current) {
+      void exitFullscreen();
+    } else {
+      void enterFullscreen();
+    }
+  };
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      const doc = document as any;
+      const hasNative = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
+      if (!hasNative && isNativeFsRef.current) {
+        isNativeFsRef.current = false;
+        setIsFullscreen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isFullscreen) {
+        void exitFullscreen();
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFsChange);
+    document.addEventListener("webkitfullscreenchange", handleFsChange);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFsChange);
+      document.removeEventListener("webkitfullscreenchange", handleFsChange);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    if (isFullscreen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      document.body.classList.add("has-clock-fullscreen");
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.classList.remove("has-clock-fullscreen");
+      };
+    }
+  }, [isFullscreen]);
 
   const speakTime = () => {
     const now = new Date();
@@ -775,14 +872,39 @@ export function ClockPage() {
       <div id="clockContent">
         {tab === "clock" ? (
           <>
-            <div className={`clock-stage ${fontClass}`} id="clockStage" ref={stageRef}>
-              <ClockFace clock24h={settings.clock24h} clockSeconds={settings.clockSeconds} />
-              <div className="clock-sub">{clockSub}</div>
+            <div
+              className={`clock-stage ${fontClass} ${isFullscreen ? "is-fullscreen" : ""}`}
+              id="clockStage"
+              ref={stageRef}
+            >
+              {isFullscreen && (
+                <button
+                  id="exitFullscreenBtn"
+                  className="clock-fullscreen-exit-btn"
+                  type="button"
+                  onClick={() => void exitFullscreen()}
+                  aria-label="全画面表示を終了"
+                  title="全画面表示を終了 (Esc)"
+                >
+                  <Icon name="x" size={18} />
+                  <span>全画面を終了</span>
+                </button>
+              )}
+              <div className="clock-stage-inner">
+                <ClockFace clock24h={settings.clock24h} clockSeconds={settings.clockSeconds} />
+                <div className="clock-sub">{clockSub}</div>
+              </div>
             </div>
             <div className="clock-controls">
-              <button className="big-btn big-btn--primary" type="button" data-fullscreen onClick={toggleFullscreen}>
-                <Icon name="eye" size={18} />
-                全画面表示
+              <button
+                id="fullscreenBtn"
+                className="big-btn big-btn--primary"
+                type="button"
+                data-fullscreen
+                onClick={toggleFullscreen}
+              >
+                <Icon name={isFullscreen ? "x" : "eye"} size={18} />
+                {isFullscreen ? "全画面を終了" : "全画面表示"}
               </button>
               <button className="big-btn big-btn--soft" type="button" data-clock-speak onClick={speakTime}>
                 <Icon name="volume" size={18} />

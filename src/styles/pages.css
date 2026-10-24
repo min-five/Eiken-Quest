@@ -212,6 +212,7 @@
 .vcard__status { display: inline-flex; align-items: center; gap: 4px; font-size: .68rem; font-weight: 700; color: var(--muted-2); }
 .vcard__status i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: block; }
 .vcard__status--learning { color: var(--warn); }
+.vcard__status--warn { color: #f97316; font-weight: 800; }
 .vcard__status--mastered { color: var(--success); }
 .vcard__fav {
   width: 28px; height: 28px; border-radius: 8px;

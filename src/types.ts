@@ -264,6 +264,35 @@ export interface PomodoroProgress {
   log: PomodoroLogEntry[];
 }
 
+export interface WritingEntry {
+  id: string;
+  grade: GradeId;
+  title: string;
+  topic: string;
+  minWords: number;
+  maxWords: number;
+  modelAnswer: string;
+  translation: string;
+  tips: string[];
+  usefulPhrases: { category: string; phrases: string[] }[];
+}
+
+export interface WritingSave {
+  id: string;
+  text: string;
+  wordsCount: number;
+  updatedAt: number;
+}
+
+export interface DictationItem {
+  id: string;
+  grade: GradeId;
+  en: string;
+  ja: string;
+  hint?: string;
+  category?: string;
+}
+
 export interface AppState {
   version: number;
   profile: Profile;
@@ -280,6 +309,8 @@ export interface AppState {
   log: Record<string, number>;
   pomodoro: PomodoroProgress;
   interview: Record<string, InterviewRecord>;
+  writingSaves: Record<string, WritingSave>;
+  dictationDone: Record<string, number>;
   badges: string[];
   goalDays: number;
   createdAt: number;

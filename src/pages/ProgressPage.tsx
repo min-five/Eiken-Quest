@@ -1,6 +1,8 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { QuizRecord, QuizType } from "../types";
 import { EQ_GRAMMAR } from "../data/grammar";
+import { DICTATION_ITEMS } from "../data/dictation";
+import { WRITING_TOPICS } from "../data/writing";
 import { useStore } from "../lib/useStore";
 import { Store } from "../lib/store";
 import { fmtShortDate } from "../lib/format";
@@ -209,6 +211,12 @@ export function ProgressPage() {
   const readAcc = accuracy("reading");
   const listenAcc = accuracy("listening");
   const mockAcc = accuracy("mock");
+  const dictationDoneCount = Object.keys(s.dictationDone || {}).length;
+  const dictationTotal = DICTATION_ITEMS.length;
+  const dictationPct = dictationTotal ? Math.round((dictationDoneCount / dictationTotal) * 100) : 0;
+  const writingCount = Object.keys(s.writingSaves || {}).length;
+  const writingTotal = WRITING_TOPICS.length;
+  const writingPct = writingTotal ? Math.min(100, Math.round((writingCount / writingTotal) * 100)) : 0;
   const masteryPct = words.seen ? Math.round((words.mastered / words.seen) * 100) : 0;
 
   return (
@@ -320,6 +328,16 @@ export function ProgressPage() {
             label="文法テーマの完了"
             detail={`${grammarDone} / ${grammarTotal}テーマ`}
             pct={grammarPct}
+          />
+          <SkillRow
+            label="ディクテーション特訓"
+            detail={`${dictationDoneCount} / ${dictationTotal}問クリア`}
+            pct={dictationPct}
+          />
+          <SkillRow
+            label="英作文・要約作成"
+            detail={`${writingCount} / ${writingTotal}題保存`}
+            pct={writingPct}
           />
           <SkillRow
             label="単語クイズの正答率"

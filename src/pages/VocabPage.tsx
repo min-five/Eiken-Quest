@@ -10,10 +10,10 @@ import { sfx, speak, toast } from "../lib/ui";
 import { Icon } from "../components/Icon";
 import { Modal } from "../components/Modal";
 
-type StatusFilter = "all" | "new" | "learning" | "due" | "mastered" | "fav";
+type StatusFilter = "all" | "new" | "learning" | "due" | "mastered" | "fav" | "weak";
 
 interface StatusInfo {
-  key: "new" | "learning" | "due" | "mastered";
+  key: "new" | "learning" | "due" | "mastered" | "weak";
   label: string;
   cls: string;
 }
@@ -29,6 +29,7 @@ const ui = {
 function statusOf(word: string): StatusInfo {
   const ws = Store.state.words[word];
   if (!ws || !ws.seen) return { key: "new", label: "未学習", cls: "" };
+  if (ws.wrong > 0 && ws.lv < 4) return { key: "weak", label: `苦手 (${ws.wrong}回ミス)`, cls: "vcard__status--warn" };
   if (ws.lv >= 5) return { key: "mastered", label: "習得済み", cls: "vcard__status--mastered" };
   if (ws.due && ws.due <= Date.now()) return { key: "due", label: "復習どき", cls: "vcard__status--learning" };
   return { key: "learning", label: "学習中", cls: "vcard__status--learning" };
@@ -37,6 +38,10 @@ function statusOf(word: string): StatusInfo {
 function countDue(): number {
   const now = Date.now();
   return Object.values(Store.state.words).filter((w) => w.seen > 0 && w.lv < 5 && w.due <= now).length;
+}
+
+function countWeak(): number {
+  return Object.values(Store.state.words).filter((w) => w.wrong > 0 && w.lv < 4).length;
 }
 
 function StatCard({
@@ -192,6 +197,7 @@ export function VocabPage() {
       const st = statusOf(v.w);
       if (status === "fav") return Store.state.words[v.w] && Store.state.words[v.w].fav;
       if (status === "due") return st.key === "due";
+      if (status === "weak") return st.key === "weak";
       return st.key === status;
     });
   }
@@ -258,6 +264,27 @@ export function VocabPage() {
     });
   };
 
+  const startWeakQuiz = () => {
+    const weakPool = (grade === "all" ? EQ_ALL_VOCAB : pool).filter((v) => {
+      const ws = Store.state.words[v.w];
+      return !!ws && ws.wrong > 0 && ws.lv < 4;
+    });
+    if (!weakPool.length) {
+      toast("苦手・要復習の単語はありません！素晴らしい成果です！", "success");
+      return;
+    }
+    const picked = sample(weakPool, Math.min(10, weakPool.length));
+    api.startQuiz({
+      title: `⚠️ 弱点特訓クイズ（${picked.length}問）`,
+      questions: buildVocabQuestions(picked, "mix", grade === "all" ? undefined : grade),
+      grade,
+      type: "vocab",
+      backLabel: "単語帳に戻る",
+    });
+  };
+
+  const weakTotal = countWeak();
+
   return (
     <div className="page">
       <div className="page-head">
@@ -265,19 +292,28 @@ export function VocabPage() {
           <div>
             <div className="eyebrow">Vocabulary</div>
             <h1>単語帳</h1>
-            <p>級ごとの重要単語を、意味・例文・発音と一緒に。間隔反復（SRS）で、忘れる前に復習できます。</p>
+            <p>級ごとの重要単語を、意味・例文・発音と一緒に。苦手な単語は集中的に復習してマスターできます。</p>
           </div>
-          <button className="btn btn--primary" type="button" data-quiz onClick={startQuiz}>
-            <Icon name="play" size={17} />
-            単語クイズを始める
-          </button>
+          <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+            {weakTotal > 0 && (
+              <button className="btn btn--warn" type="button" onClick={startWeakQuiz} title="間違えた単語だけを集中的に復習">
+                <Icon name="bolt" size={17} />
+                弱点特訓 ({weakTotal})
+              </button>
+            )}
+            <button className="btn btn--primary" type="button" data-quiz onClick={startQuiz}>
+              <Icon name="play" size={17} />
+              単語クイズ
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid--4 grid--tight" style={{ marginBottom: 20 }}>
+      <div className="grid grid--5 grid--tight" style={{ marginBottom: 20 }}>
         <StatCard icon="📚" label="学習した単語" value={stats.seen} tone="accent" />
         <StatCard icon="🧠" label="習得済み" value={stats.mastered} tone="teal" />
-        <StatCard icon="⏰" label="復習どき" value={countDue()} tone="warn" />
+        <StatCard icon="⚠️" label="苦手・要復習" value={weakTotal} tone="warn" />
+        <StatCard icon="⏰" label="復習どき" value={countDue()} tone="accent" />
         <StatCard icon="♡" label="お気に入り" value={stats.fav} tone="pink" />
       </div>
 
@@ -318,12 +354,13 @@ export function VocabPage() {
           <select
             className="select"
             id="statusFilter"
-            style={{ width: "auto", minWidth: 130 }}
+            style={{ width: "auto", minWidth: 140 }}
             aria-label="状態で絞り込む"
             value={status}
             onChange={(e) => updateStatus(e.target.value as StatusFilter)}
           >
             <option value="all">すべての状態</option>
+            <option value="weak">⚠️ 苦手・要復習</option>
             <option value="new">未学習</option>
             <option value="learning">学習中</option>
             <option value="due">復習どき</option>

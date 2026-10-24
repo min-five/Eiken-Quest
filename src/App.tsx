@@ -19,19 +19,23 @@ import { VocabPage } from "./pages/VocabPage";
 import { GrammarPage } from "./pages/GrammarPage";
 import { ExamPage, resetExamUi } from "./pages/ExamPage";
 import { InterviewPage } from "./pages/InterviewPage";
+import { WritingPage } from "./pages/WritingPage";
+import { DictationPage } from "./pages/DictationPage";
 import { ClockPage } from "./pages/ClockPage";
 import { ProgressPage } from "./pages/ProgressPage";
 import { SettingsPage } from "./pages/SettingsPage";
 
-const NAV_ITEMS: { name: RouteName; href: string; icon: string; label: string }[] = [
-  { name: "home", href: "#/", icon: "◎", label: "ホーム" },
-  { name: "vocab", href: "#/vocab", icon: "Aa", label: "単語帳" },
-  { name: "grammar", href: "#/grammar", icon: "✎", label: "英文法" },
-  { name: "exam", href: "#/exam", icon: "✎", label: "1次試験" },
-  { name: "interview", href: "#/interview", icon: "🎤", label: "2次試験（面接）" },
-  { name: "clock", href: "#/clock", icon: "◷", label: "時計・集中タイマー" },
-  { name: "progress", href: "#/progress", icon: "▲", label: "学習記録" },
-  { name: "settings", href: "#/settings", icon: "⚙", label: "設定" },
+const NAV_ITEMS: { name: RouteName; href: string; icon: string; label: string; group: "learn" | "exam" | "tool" }[] = [
+  { name: "home", href: "#/", icon: "◎", label: "ホーム", group: "learn" },
+  { name: "vocab", href: "#/vocab", icon: "Aa", label: "単語帳", group: "learn" },
+  { name: "grammar", href: "#/grammar", icon: "✎", label: "英文法", group: "learn" },
+  { name: "dictation", href: "#/dictation", icon: "🎧", label: "ディクテーション", group: "learn" },
+  { name: "exam", href: "#/exam", icon: "📋", label: "1次試験", group: "exam" },
+  { name: "writing", href: "#/writing", icon: "✍", label: "英作文（ライティング）", group: "exam" },
+  { name: "interview", href: "#/interview", icon: "🎤", label: "2次試験（面接）", group: "exam" },
+  { name: "clock", href: "#/clock", icon: "◷", label: "時計・集中タイマー", group: "tool" },
+  { name: "progress", href: "#/progress", icon: "▲", label: "学習記録", group: "tool" },
+  { name: "settings", href: "#/settings", icon: "⚙", label: "設定", group: "tool" },
 ];
 
 const TIPS = [
@@ -50,8 +54,12 @@ function pageFor(name: RouteName, params: string[]): ReactNode {
       return <VocabPage />;
     case "grammar":
       return <GrammarPage params={params} />;
+    case "dictation":
+      return <DictationPage />;
     case "exam":
       return <ExamPage />;
+    case "writing":
+      return <WritingPage />;
     case "interview":
       return <InterviewPage />;
     case "clock":
@@ -377,15 +385,15 @@ export default function App() {
 
             <nav className="drawer__nav">
               <div className="drawer__section-label">学ぶ</div>
-              {NAV_ITEMS.slice(0, 3).map((item) => (
+              {NAV_ITEMS.filter((item) => item.group === "learn").map((item) => (
                 <DrawerLink key={item.name} item={item} active={route.name === item.name} onNavigate={() => closeDrawer(false)} />
               ))}
               <div className="drawer__section-label">試験対策</div>
-              {NAV_ITEMS.slice(3, 5).map((item) => (
+              {NAV_ITEMS.filter((item) => item.group === "exam").map((item) => (
                 <DrawerLink key={item.name} item={item} active={route.name === item.name} onNavigate={() => closeDrawer(false)} />
               ))}
               <div className="drawer__section-label">ツール</div>
-              {NAV_ITEMS.slice(5).map((item) => (
+              {NAV_ITEMS.filter((item) => item.group === "tool").map((item) => (
                 <DrawerLink key={item.name} item={item} active={route.name === item.name} onNavigate={() => closeDrawer(false)} />
               ))}
             </nav>
@@ -394,7 +402,7 @@ export default function App() {
               <div className="drawer__tip" id="drawerTip">
                 {tip}
               </div>
-              <div className="drawer__ver">EikenQuest v1.0</div>
+              <div className="drawer__ver">EikenQuest v1.1.1</div>
             </div>
           </aside>
 

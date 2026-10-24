@@ -50,6 +50,8 @@ const DEFAULT_STATE: AppState = {
   log: {},
   pomodoro: { completed: 0, focusMin: 0, log: [] },
   interview: {},
+  writingSaves: {},
+  dictationDone: {},
   badges: [],
   goalDays: 0,
   createdAt: Date.now(),
@@ -389,19 +391,41 @@ function weeklyXp(): number {
   return lastNDays(7).reduce((sum, day) => sum + day.xp, 0);
 }
 
+/* ---------------- Writing & Dictation ---------------- */
+
+function saveWriting(id: string, text: string, wordsCount: number): void {
+  if (!state.writingSaves) state.writingSaves = {};
+  state.writingSaves[id] = { id, text, wordsCount, updatedAt: Date.now() };
+  save();
+}
+
+function markDictationDone(id: string): void {
+  if (!state.dictationDone) state.dictationDone = {};
+  state.dictationDone[id] = Date.now();
+  save();
+}
+
 /* ---------------- Badge engine ---------------- */
 
 const BADGE_DEFS: BadgeDef[] = [
   { id: "first", icon: "🌱", name: "はじめの一歩", desc: "はじめて学習する", test: (s) => s.xp > 0 },
   { id: "streak3", icon: "🔥", name: "3日連続", desc: "3日間連続で学習", test: (s) => s.streak >= 3 },
   { id: "streak7", icon: "⚡", name: "1週間連続", desc: "7日間連続で学習", test: (s) => s.streak >= 7 },
+  { id: "streak14", icon: "👑", name: "2週間連続", desc: "14日間連続で学習", test: (s) => s.streak >= 14 },
   { id: "streak30", icon: "🏆", name: "30日連続", desc: "30日間連続で学習", test: (s) => s.streak >= 30 },
   { id: "words50", icon: "📚", name: "単語50", desc: "50語を学習", test: () => wordStats().seen >= 50 },
   { id: "words100", icon: "📖", name: "単語100", desc: "100語を学習", test: () => wordStats().seen >= 100 },
+  { id: "words300", icon: "💎", name: "語彙の達人", desc: "300語を学習", test: () => wordStats().seen >= 300 },
   { id: "mastered50", icon: "🧠", name: "記憶の達人", desc: "50語を習得", test: () => wordStats().mastered >= 50 },
+  { id: "weak_master", icon: "🛡️", name: "弱点バスター", desc: "苦手な単語を克服する", test: (s) => Object.values(s.words).some((w) => w.wrong > 0 && w.lv >= 4) },
   { id: "grammar10", icon: "✎", name: "文法マニア", desc: "文法10テーマを完了", test: (s) => Object.keys(s.grammarDone).length >= 10 },
   { id: "quiz10", icon: "🎯", name: "クイズ中毒", desc: "クイズを10回完了", test: (s) => s.quizHistory.length >= 10 },
   { id: "perfect", icon: "💯", name: "パーフェクト", desc: "クイズで全問正解", test: (s) => s.quizHistory.some((q) => q.total > 0 && q.score === q.total) },
+  { id: "speed_combo", icon: "⚡", name: "疾風迅雷", desc: "クイズでコンボ8を達成", test: (s) => s.quizHistory.some((q) => (q.maxCombo || 0) >= 8) },
+  { id: "writing1", icon: "✍️", name: "表現者への道", desc: "英作文を1篇作成・保存", test: (s) => Object.keys(s.writingSaves || {}).length >= 1 },
+  { id: "writing5", icon: "📜", name: "エッセイスト", desc: "英作文を5篇作成", test: (s) => Object.keys(s.writingSaves || {}).length >= 5 },
+  { id: "dictation1", icon: "🎧", name: "リスニング開眼", desc: "ディクテーションを1問クリア", test: (s) => Object.keys(s.dictationDone || {}).length >= 1 },
+  { id: "dictation10", icon: "👂", name: "絶対音感", desc: "ディクテーションを10問クリア", test: (s) => Object.keys(s.dictationDone || {}).length >= 10 },
   { id: "focus5", icon: "⏳", name: "集中の芽", desc: "ポモドーロ5回完了", test: (s) => s.pomodoro.completed >= 5 },
   { id: "focus25", icon: "🧘", name: "集中の達人", desc: "ポモドーロ25回完了", test: (s) => s.pomodoro.completed >= 25 },
   { id: "interview", icon: "🎤", name: "面接デビュー", desc: "面接練習を1回完了", test: (s) => Object.keys(s.interview).length > 0 },
@@ -466,6 +490,8 @@ export const Store = {
   recordQuiz,
   recordFocus,
   recordInterview,
+  saveWriting,
+  markDictationDone,
   lastNDays,
   weeklyXp,
   checkBadges,

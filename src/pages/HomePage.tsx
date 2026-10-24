@@ -13,7 +13,7 @@ import { Progress, Ring } from "../components/Bits";
 import { useIsNarrow } from "../lib/useMedia";
 
 interface QuickDef {
-  key: "vocab" | "grammar" | "exam" | "interview";
+  key: "vocab" | "grammar" | "dictation" | "exam" | "writing" | "interview";
   icon: string;
   color: string;
   title: string;
@@ -46,6 +46,12 @@ export function HomePage() {
   const dayIndex = Math.floor(new Date().setHours(0, 0, 0, 0) / 86400000);
   const wotd = pool.length ? pool[dayIndex % pool.length] : null;
 
+  const weakWords = pool.filter((w) => {
+    const s = state.words[w.w];
+    if (!s) return false;
+    return (s.wrong || 0) > (s.correct || 0) || (s.wrong || 0) >= 2;
+  });
+
   const recentTopics = Object.keys(state.grammarRead)
     .map((id) => ({ id, ts: state.grammarRead[id], topic: EQ_GRAMMAR.find((t) => t.id === id) }))
     .filter((x): x is { id: string; ts: number; topic: (typeof EQ_GRAMMAR)[number] } => !!x.topic)
@@ -74,6 +80,22 @@ export function HomePage() {
     });
   };
 
+  const startWeakQuiz = () => {
+    sfx("click");
+    if (!weakWords.length) {
+      toast("現在、弱点としてマークされた単語はありません！", "success");
+      return;
+    }
+    const shuffled = [...weakWords].sort(() => Math.random() - 0.5).slice(0, 10);
+    api.startQuiz({
+      title: `⚠️ ${gradeLabel(gradeId)} 弱点特訓クイズ`,
+      questions: buildVocabQuestions(shuffled, "mix", gradeId === "all" ? undefined : gradeId),
+      grade: gradeId,
+      type: "vocab",
+      backLabel: "ホームに戻る",
+    });
+  };
+
   const quickCards: QuickDef[] = [
     {
       key: "vocab",
@@ -96,14 +118,34 @@ export function HomePage() {
       meta: `${doneTopics}完了`,
     },
     {
+      key: "dictation",
+      icon: "🎧",
+      color: "#db2777",
+      title: "ディクテーション",
+      desc: "聴き取って並べ替え",
+      sub: "耳を鍛えるリスニング特訓",
+      tag: "聴解",
+      meta: `${Object.keys(state.dictationDone || {}).length}問完了`,
+    },
+    {
       key: "exam",
-      icon: "✎",
+      icon: "📋",
       color: "#f59e0b",
       title: "1次試験対策",
       desc: "単語・文法・読解・聴解",
       sub: "本番形式のミニ模試も",
       tag: "1次",
       meta: "4モード",
+    },
+    {
+      key: "writing",
+      icon: "✍",
+      color: "#8b5cf6",
+      title: "英作文スタジオ",
+      desc: "語数カウント＆添削",
+      sub: "3級〜1級の要約・意見論述",
+      tag: "記述",
+      meta: `${Object.keys(state.writingSaves || {}).length}編保存`,
     },
     {
       key: "interview",
@@ -121,7 +163,9 @@ export function HomePage() {
     sfx("click");
     if (key === "vocab") startVocabQuiz();
     else if (key === "grammar") window.location.hash = "#/grammar";
+    else if (key === "dictation") window.location.hash = "#/dictation";
     else if (key === "exam") window.location.hash = "#/exam";
+    else if (key === "writing") window.location.hash = "#/writing";
     else window.location.hash = "#/interview";
   };
 
@@ -177,11 +221,42 @@ export function HomePage() {
         </div>
       </section>
 
+      {weakWords.length > 0 ? (
+        <section
+          className="card card--pad anim-up"
+          style={{
+            marginBottom: 22,
+            borderLeft: "4px solid #f59e0b",
+            background: "linear-gradient(135deg, rgba(245,158,11,0.09), rgba(239,68,68,0.04))",
+          }}
+        >
+          <div className="row row--between row--wrap" style={{ gap: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ fontSize: "1.75rem" }}>⚠️</span>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: "1.05rem" }}>
+                  弱点克服モード：苦手な単語が <span style={{ color: "#d97706" }}>{weakWords.length}語</span> あります
+                </div>
+                <div className="tiny muted">過去に間違えた単語を集中的にテストして、確実に定着させましょう！</div>
+              </div>
+            </div>
+            <div className="row" style={{ gap: 8 }}>
+              <button className="btn btn--warn btn--sm" type="button" onClick={startWeakQuiz}>
+                <Icon name="play" size={14} /> 弱点を特訓する
+              </button>
+              <a className="btn btn--outline btn--sm" href="#/vocab">
+                単語帳で確認
+              </a>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <section className="anim-up delay-1" style={{ marginBottom: 24 }}>
         <div className="section-head">
           <div>
             <h2>今日のメニュー</h2>
-            <div className="section-head__sub">5分から始められる4つの入口</div>
+            <div className="section-head__sub">5分から始められる6つの学習モード</div>
           </div>
           <button
             className="link"
@@ -200,7 +275,7 @@ export function HomePage() {
             級を変更
           </button>
         </div>
-        <div className="grid grid--4">
+        <div className="grid grid--3">
           {quickCards.map((card) => (
             <button
               key={card.key}
@@ -376,6 +451,32 @@ export function HomePage() {
                 <span className="recommend-item__go">→</span>
               </a>
             ) : null}
+            <a className="recommend-item" href="#/dictation">
+              <span
+                className="recommend-item__icon"
+                style={{ background: "rgba(219,39,119,0.12)", color: "#db2777" }}
+              >
+                🎧
+              </span>
+              <span className="recommend-item__body">
+                <span className="recommend-item__title">ディクテーション特訓</span>
+                <span className="recommend-item__sub">音声を聴いて並べ替えトレーニング</span>
+              </span>
+              <span className="recommend-item__go">→</span>
+            </a>
+            <a className="recommend-item" href="#/writing">
+              <span
+                className="recommend-item__icon"
+                style={{ background: "rgba(139,92,246,0.12)", color: "#8b5cf6" }}
+              >
+                ✍
+              </span>
+              <span className="recommend-item__body">
+                <span className="recommend-item__title">英作文・要約スタジオ</span>
+                <span className="recommend-item__sub">リアルタイム語数測定＆模範解答</span>
+              </span>
+              <span className="recommend-item__go">→</span>
+            </a>
             <a className="recommend-item" href="#/clock">
               <span className="recommend-item__icon">◷</span>
               <span className="recommend-item__body">

@@ -7,6 +7,7 @@ import { Store } from "./lib/store";
 import { ROUTES, titleFor, useRoute } from "./lib/router";
 import type { RouteName } from "./lib/router";
 import { sfx, toast } from "./lib/ui";
+import { APP_VERSION } from "./lib/constants";
 import { AppContext } from "./lib/app-context";
 import type { AppApi } from "./lib/app-context";
 import { Icon } from "./components/Icon";
@@ -402,7 +403,7 @@ export default function App() {
               <div className="drawer__tip" id="drawerTip">
                 {tip}
               </div>
-              <div className="drawer__ver">EikenQuest v1.1.1</div>
+              <div className="drawer__ver">EikenQuest v{APP_VERSION}</div>
             </div>
           </aside>
 

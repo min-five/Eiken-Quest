@@ -9,6 +9,7 @@ import { useApp } from "../lib/app-context";
 import { debounce, fmtDate } from "../lib/format";
 import { clockFontFamily } from "../lib/fonts";
 import { sfx, speak, toast } from "../lib/ui";
+import { APP_VERSION } from "../lib/constants";
 import { confirmDialog } from "../components/ConfirmProvider";
 import { Icon } from "../components/Icon";
 import type { IconName } from "../components/Icon";
@@ -611,7 +612,7 @@ export function SettingsPage() {
         <div className="setting-row" style={{ display: "block" }}>
           <dl className="key-value">
             <dt>バージョン</dt>
-            <dd>1.0.0</dd>
+            <dd>{APP_VERSION}</dd>
             <dt>収録単語</dt>
             <dd>{EQ_ALL_VOCAB ? EQ_ALL_VOCAB.length : 0} 語</dd>
             <dt>文法レッスン</dt>

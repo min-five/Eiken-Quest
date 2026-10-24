@@ -1,0 +1,22 @@
+{
+  "name": "EikenQuest — 英検5級〜1級 学習プラットフォーム",
+  "short_name": "EikenQuest",
+  "description": "英検5級から1級までの1次・2次試験対策、単語、文法、集中タイマーをひとつに。",
+  "lang": "ja",
+  "dir": "ltr",
+  "start_url": "./index.html#/",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f6fb",
+  "theme_color": "#4f46e5",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

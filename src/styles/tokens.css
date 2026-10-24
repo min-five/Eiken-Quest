@@ -1,0 +1,138 @@
+/* ============================================================
+   EikenQuest — Design tokens
+   ============================================================ */
+:root {
+  --font-sans: "Manrope", "Zen Kaku Gothic New", -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", sans-serif;
+  --font-jp: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", sans-serif;
+  --font-display: "Manrope", "Zen Kaku Gothic New", sans-serif;
+
+  --accent: #4f46e5;
+  --accent-strong: #4338ca;
+  --accent-soft: #eef2ff;
+  --accent-ink: #ffffff;
+  --accent-2: #14b8a6;
+  --accent-2-soft: #ccfbf1;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --success: #10b981;
+  --info: #3b82f6;
+  --pink: #ec4899;
+
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --topbar-h: 68px;
+  --tabbar-h: 64px;
+  --drawer-w: 316px;
+  --content-max: 1180px;
+
+  --ease: cubic-bezier(.22,.61,.36,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+
+  --shadow-xs: 0 1px 2px rgba(16,24,40,.05);
+  --shadow-sm: 0 2px 8px rgba(16,24,40,.06), 0 1px 2px rgba(16,24,40,.04);
+  --shadow-md: 0 8px 24px -6px rgba(16,24,40,.12), 0 2px 8px rgba(16,24,40,.05);
+  --shadow-lg: 0 24px 48px -16px rgba(16,24,40,.18), 0 8px 16px -8px rgba(16,24,40,.08);
+  --shadow-glow: 0 12px 32px -8px color-mix(in srgb, var(--accent) 45%, transparent);
+
+  --ring: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f6fb;
+  --bg-tint: #eef1f9;
+  --surface: #ffffff;
+  --surface-2: #f7f8fc;
+  --surface-3: #eef0f7;
+  --surface-glass: rgba(255,255,255,.82);
+  --text: #101828;
+  --text-2: #344054;
+  --muted: #667085;
+  --muted-2: #98a2b3;
+  --border: #e6e9f2;
+  --border-strong: #d3d8e6;
+  --invert-text: #ffffff;
+  --code-bg: #f2f4fa;
+  --nav-active-bg: #eef2ff;
+  --nav-active-text: #4338ca;
+  --shadow-color: 16,24,40;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #080b14;
+  --bg-tint: #0b1020;
+  --surface: #111726;
+  --surface-2: #161e30;
+  --surface-3: #1d273c;
+  --surface-glass: rgba(17,23,38,.82);
+  --text: #f2f5fb;
+  --text-2: #d3daea;
+  --muted: #97a3ba;
+  --muted-2: #6b7891;
+  --border: #222c42;
+  --border-strong: #2f3b55;
+  --invert-text: #0b1020;
+  --code-bg: #0d1424;
+  --accent-soft: #1c2143;
+  --accent-2-soft: #0d2f2c;
+  --nav-active-bg: #1e2547;
+  --nav-active-text: #c7d2fe;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-sm: 0 2px 10px rgba(0,0,0,.35);
+  --shadow-md: 0 12px 28px -8px rgba(0,0,0,.55);
+  --shadow-lg: 0 30px 60px -20px rgba(0,0,0,.7);
+  --shadow-glow: 0 12px 36px -10px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+/* Accent variants (usable in both themes) */
+html[data-accent="indigo"] { --accent: #4f46e5; --accent-strong: #4338ca; --accent-soft: #eef2ff; --accent-2: #14b8a6; --accent-2-soft: #ccfbf1; }
+html[data-accent="teal"]   { --accent: #0d9488; --accent-strong: #0f766e; --accent-soft: #e6fffb; --accent-2: #6366f1; --accent-2-soft: #eef2ff; }
+html[data-accent="rose"]   { --accent: #e11d48; --accent-strong: #be123c; --accent-soft: #fff1f4; --accent-2: #f59e0b; --accent-2-soft: #fef3c7; }
+html[data-accent="violet"] { --accent: #7c3aed; --accent-strong: #6d28d9; --accent-soft: #f5f0ff; --accent-2: #06b6d4; --accent-2-soft: #cffafe; }
+html[data-accent="amber"]  { --accent: #d97706; --accent-strong: #b45309; --accent-soft: #fff8eb; --accent-2: #0d9488; --accent-2-soft: #e6fffb; }
+html[data-accent="blue"]   { --accent: #2563eb; --accent-strong: #1d4ed8; --accent-soft: #eff6ff; --accent-2: #8b5cf6; --accent-2-soft: #f3e8ff; }
+
+html[data-theme="dark"][data-accent="indigo"] { --accent-soft: #1c2143; --accent-2-soft: #0d2f2c; }
+html[data-theme="dark"][data-accent="teal"]   { --accent-soft: #0b2f2c; --accent-2-soft: #1c2143; }
+html[data-theme="dark"][data-accent="rose"]   { --accent-soft: #3a1420; --accent-2-soft: #3a2a0c; }
+html[data-theme="dark"][data-accent="violet"] { --accent-soft: #261a45; --accent-2-soft: #0c2f37; }
+html[data-theme="dark"][data-accent="amber"]  { --accent-soft: #35230c; --accent-2-soft: #0b2f2c; }
+html[data-theme="dark"][data-accent="blue"]   { --accent-soft: #142448; --accent-2-soft: #291a45; }
+
+/* Font size preference */
+html[data-fontsize="small"] { font-size: 15px; }
+html[data-fontsize="normal"] { font-size: 16px; }
+html[data-fontsize="large"] { font-size: 17.5px; }
+
+/* Reduce motion */
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

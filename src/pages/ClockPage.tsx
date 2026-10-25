@@ -1314,7 +1314,7 @@ export function ClockPage() {
             </button>
           </div>
           <div className="clock-widget-box__time">
-            {swParts.m}:{swParts.s}.<small style={{ fontSize: "0.6em", opacity: 0.8 }}>{swParts.ms}</small>
+            {swParts.base}.<small style={{ fontSize: "0.6em", opacity: 0.8 }}>{swParts.centis}</small>
           </div>
           <div className="clock-widget-box__actions">
             <button
@@ -1502,7 +1502,7 @@ export function ClockPage() {
                 <div className="card__head">
                   <div>
                     <div className="card__title">
-                      <Icon name="activity" size={18} /> 連動ウィジェット表示
+                      <Icon name="timer" size={18} /> 連動ウィジェット表示
                     </div>
                     <div className="card__sub">時計と一緒にタイマー・ストップウォッチ・ポモドーロを表示</div>
                   </div>

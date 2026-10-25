@@ -37,6 +37,7 @@ const DEFAULT_STATE: AppState = {
     clockStyle: "digital",
     clockMotion: "smooth",
     clockParticles: true,
+    clockWidget: "none",
     timerSound: true,
     autoNext: true,
     showFurigana: true,

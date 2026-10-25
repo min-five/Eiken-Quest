@@ -32,6 +32,8 @@ export type ClockStyleId = "digital" | "analog" | "flip";
 
 export type ClockMotionId = "smooth" | "tick" | "pulse" | "float";
 
+export type ClockWidgetId = "none" | "timer" | "stopwatch" | "pomodoro";
+
 export type QuizType = "vocab" | "grammar" | "reading" | "listening" | "mock" | "mixed";
 
 /* ---------------- Content ---------------- */
@@ -214,6 +216,7 @@ export interface Settings {
   clockStyle?: ClockStyleId;
   clockMotion?: ClockMotionId;
   clockParticles?: boolean;
+  clockWidget?: ClockWidgetId;
   timerSound: boolean;
   autoNext: boolean;
   showFurigana: boolean;

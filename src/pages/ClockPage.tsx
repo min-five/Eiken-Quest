@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import type { ClockFontId, PomodoroSettings } from "../types";
+import type { ClockBgId, ClockFontId, ClockMotionId, ClockStyleId, PomodoroSettings } from "../types";
 import { clockFontFamily } from "../lib/fonts";
 import { useStore } from "../lib/useStore";
 import { Store } from "../lib/store";
@@ -26,6 +26,30 @@ const FONTS: { id: ClockFontId; name: string; note: string }[] = [
   { id: "hand", name: "手書き", note: "あたたかい" },
   { id: "pixel", name: "ドット", note: "レトロ" },
   { id: "manrope", name: "Manrope", note: "モダン" },
+];
+
+const CLOCK_BGS: { id: ClockBgId; name: string; preview: string; desc: string }[] = [
+  { id: "default", name: "デフォルト", preview: "linear-gradient(135deg, #6366f1, #14b8a6)", desc: "標準テーマ" },
+  { id: "aurora", name: "オーロラ", preview: "linear-gradient(135deg, #10b981, #06b6d4, #6366f1)", desc: "流れる光" },
+  { id: "starry", name: "星空コズミック", preview: "linear-gradient(135deg, #090a14, #4f46e5, #030409)", desc: "静寂の宇宙" },
+  { id: "sunset", name: "夕暮れ", preview: "linear-gradient(135deg, #e11d48, #d97706, #1b0a24)", desc: "温かな黄昏" },
+  { id: "cyber", name: "サイバーネオン", preview: "linear-gradient(135deg, #00f5ff, #ec4899, #05050e)", desc: "発光グリッド" },
+  { id: "cafe", name: "カフェウッド", preview: "linear-gradient(135deg, #f59e0b, #78350f, #1c1511)", desc: "落ち着く木目" },
+  { id: "oled", name: "OLEDブラック", preview: "linear-gradient(135deg, #1e293b, #000000)", desc: "究極の漆黒" },
+  { id: "mint", name: "ミントスカイ", preview: "linear-gradient(135deg, #34d399, #0ea5e9, #061e19)", desc: "爽やかな緑" },
+];
+
+const CLOCK_STYLES: { id: ClockStyleId; name: string; icon: string }[] = [
+  { id: "digital", name: "デジタル", icon: "🔢" },
+  { id: "analog", name: "アナログ", icon: "⏱" },
+  { id: "flip", name: "フリップ", icon: "🏷" },
+];
+
+const CLOCK_MOTIONS: { id: ClockMotionId; name: string; desc: string }[] = [
+  { id: "smooth", name: "スムーズ", desc: "滑らかな連続動作" },
+  { id: "tick", name: "ステップ", desc: "カチッと1秒動作" },
+  { id: "pulse", name: "パルス", desc: "優しく呼吸する光" },
+  { id: "float", name: "フロート", desc: "ふわふわ浮遊" },
 ];
 
 const TIMER_PAGE_TITLE = "EikenQuest — 時計・集中タイマー";
@@ -107,9 +131,9 @@ function pausePomodoro(): void {
   pomo.running = false;
 }
 
-/* ---------------- Clock ---------------- */
+/* ---------------- Clock Faces ---------------- */
 
-function ClockFace({ clock24h, clockSeconds }: { clock24h: boolean; clockSeconds: boolean }) {
+function DigitalClockFace({ clock24h, clockSeconds }: { clock24h: boolean; clockSeconds: boolean }) {
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -147,6 +171,245 @@ function ClockFace({ clock24h, clockSeconds }: { clock24h: boolean; clockSeconds
       </div>
     </>
   );
+}
+
+function AnalogClockFace({
+  motion,
+  clockSeconds,
+}: {
+  motion: ClockMotionId;
+  clockSeconds: boolean;
+}) {
+  const [now, setNow] = useState(() => new Date());
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    if (motion === "smooth") {
+      let active = true;
+      const update = () => {
+        if (!active) return;
+        setNow(new Date());
+        rafRef.current = window.requestAnimationFrame(update);
+      };
+      rafRef.current = window.requestAnimationFrame(update);
+      return () => {
+        active = false;
+        window.cancelAnimationFrame(rafRef.current);
+      };
+    } else {
+      const id = window.setInterval(() => setNow(new Date()), 250);
+      return () => window.clearInterval(id);
+    }
+  }, [motion]);
+
+  const sec = now.getSeconds();
+  const ms = now.getMilliseconds();
+  const min = now.getMinutes();
+  const hr = now.getHours() % 12;
+
+  const secDeg = motion === "smooth" ? (sec + ms / 1000) * 6 : sec * 6;
+  const minDeg = (min + sec / 60) * 6;
+  const hrDeg = (hr + min / 60 + sec / 3600) * 30;
+
+  return (
+    <div className="analog-clock-wrap">
+      <div className="analog-clock">
+        <div className="analog-clock__face">
+          <span className="analog-clock__num" style={{ top: "14%", left: "50%" }}>12</span>
+          <span className="analog-clock__num" style={{ top: "50%", left: "86%" }}>3</span>
+          <span className="analog-clock__num" style={{ top: "86%", left: "50%" }}>6</span>
+          <span className="analog-clock__num" style={{ top: "50%", left: "14%" }}>9</span>
+
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div
+              key={i}
+              className={`analog-clock__mark ${i % 3 === 0 ? "analog-clock__mark--major" : ""}`}
+              style={{ transform: `rotate(${i * 30}deg) translateY(-100%)` }}
+            />
+          ))}
+
+          <div
+            className="analog-clock__hand analog-clock__hand--hour"
+            style={{ transform: `rotate(${hrDeg}deg)` }}
+          />
+          <div
+            className="analog-clock__hand analog-clock__hand--minute"
+            style={{ transform: `rotate(${minDeg}deg)` }}
+          />
+          {clockSeconds ? (
+            <div
+              className={`analog-clock__hand analog-clock__hand--second ${motion === "tick" ? "is-tick" : ""}`}
+              style={{ transform: `rotate(${secDeg}deg)` }}
+            />
+          ) : null}
+          <div className="analog-clock__pivot" />
+        </div>
+      </div>
+      <div className="clock-date" id="clockDate" style={{ marginTop: 18 }}>
+        {fmtDate(now)}
+      </div>
+    </div>
+  );
+}
+
+function FlipClockFace({
+  clock24h,
+  clockSeconds,
+}: {
+  clock24h: boolean;
+  clockSeconds: boolean;
+}) {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(new Date()), 250);
+    return () => window.clearInterval(id);
+  }, []);
+
+  let h = now.getHours();
+  let ampm = "";
+  if (clock24h) {
+    h = Number(String(h).padStart(2, "0"));
+  } else {
+    ampm = h < 12 ? "AM" : "PM";
+    h = h % 12 || 12;
+  }
+  const hStr = String(h).padStart(2, "0");
+  const mStr = String(now.getMinutes()).padStart(2, "0");
+  const sStr = String(now.getSeconds()).padStart(2, "0");
+
+  return (
+    <>
+      <div className="flip-clock" id="flipClock" aria-live="off">
+        <div className="flip-group">
+          <div className="flip-cards">
+            <span className="flip-card">{hStr[0]}</span>
+            <span className="flip-card">{hStr[1]}</span>
+          </div>
+          <span className="flip-group__label">{ampm ? `${ampm} 時間` : "時間"}</span>
+        </div>
+        <span className="flip-colon">:</span>
+        <div className="flip-group">
+          <div className="flip-cards">
+            <span className="flip-card">{mStr[0]}</span>
+            <span className="flip-card">{mStr[1]}</span>
+          </div>
+          <span className="flip-group__label">分</span>
+        </div>
+        {clockSeconds ? (
+          <>
+            <span className="flip-colon">:</span>
+            <div className="flip-group">
+              <div className="flip-cards">
+                <span className="flip-card" style={{ color: "var(--clock-accent, var(--accent))" }}>{sStr[0]}</span>
+                <span className="flip-card" style={{ color: "var(--clock-accent, var(--accent))" }}>{sStr[1]}</span>
+              </div>
+              <span className="flip-group__label">秒</span>
+            </div>
+          </>
+        ) : null}
+      </div>
+      <div className="clock-date" id="clockDate" style={{ marginTop: 18 }}>
+        {fmtDate(now)}
+      </div>
+    </>
+  );
+}
+
+function ClockParticlesCanvas({ bg }: { bg: ClockBgId }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId = 0;
+    let width = (canvas.width = canvas.offsetWidth || 300);
+    let height = (canvas.height = canvas.offsetHeight || 300);
+
+    const onResize = () => {
+      if (!canvas) return;
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+    };
+    window.addEventListener("resize", onResize);
+
+    const count = bg === "starry" ? 50 : bg === "cyber" ? 30 : bg === "aurora" ? 35 : 22;
+    const particles = Array.from({ length: count }).map(() => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 2.2 + 0.8,
+      speedX: (Math.random() - 0.5) * (bg === "cyber" ? 0.7 : 0.3),
+      speedY: bg === "aurora" ? -(Math.random() * 0.4 + 0.1) : (Math.random() - 0.5) * 0.35,
+      opacity: Math.random() * 0.7 + 0.2,
+      pulse: Math.random() * Math.PI * 2,
+    }));
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((p) => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.pulse += 0.03;
+
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        const currentOpacity = p.opacity * (0.6 + 0.4 * Math.sin(p.pulse));
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+
+        if (bg === "aurora") {
+          ctx.fillStyle = `rgba(45, 212, 191, ${currentOpacity})`;
+        } else if (bg === "cyber") {
+          ctx.fillStyle = `rgba(0, 245, 255, ${currentOpacity})`;
+        } else if (bg === "sunset") {
+          ctx.fillStyle = `rgba(251, 191, 36, ${currentOpacity})`;
+        } else {
+          ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity})`;
+        }
+        ctx.fill();
+      });
+
+      animId = window.requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.cancelAnimationFrame(animId);
+    };
+  }, [bg]);
+
+  return <canvas ref={canvasRef} className="clock-particles-canvas" aria-hidden="true" />;
+}
+
+function ClockDisplay({
+  style,
+  motion,
+  clock24h,
+  clockSeconds,
+}: {
+  style: ClockStyleId;
+  motion: ClockMotionId;
+  clock24h: boolean;
+  clockSeconds: boolean;
+}) {
+  switch (style) {
+    case "analog":
+      return <AnalogClockFace motion={motion} clockSeconds={clockSeconds} />;
+    case "flip":
+      return <FlipClockFace clock24h={clock24h} clockSeconds={clockSeconds} />;
+    case "digital":
+    default:
+      return <DigitalClockFace clock24h={clock24h} clockSeconds={clockSeconds} />;
+  }
 }
 
 /* ---------------- Stopwatch ---------------- */
@@ -189,10 +452,17 @@ export function ClockPage() {
   const [tmOn, setTmOn] = useState(tm.running);
   const [pomoOn, setPomoOn] = useState(pomo.running);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [quickOpen, setQuickOpen] = useState(false);
   const isNativeFsRef = useRef(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
+  const clockBg = settings.clockBg || "default";
+  const clockStyle = settings.clockStyle || "digital";
+  const clockMotion = settings.clockMotion || "smooth";
+  const clockParticles = settings.clockParticles !== false;
   const fontClass = `clock-font--${settings.clockFont || "orbitron"}`;
+  const bgClass = `clock-bg--${clockBg}`;
+  const motionClass = `clock-motion--${clockMotion}`;
 
   const hasSavedTimer = tm.total > 0 && tm.remaining > 0 && (tm.remaining < tm.total || tm.done > 0);
 
@@ -873,28 +1143,132 @@ export function ClockPage() {
         {tab === "clock" ? (
           <>
             <div
-              className={`clock-stage ${fontClass} ${isFullscreen ? "is-fullscreen" : ""}`}
+              className={`clock-stage ${fontClass} ${bgClass} ${motionClass} ${isFullscreen ? "is-fullscreen" : ""}`}
               id="clockStage"
               ref={stageRef}
             >
+              {clockParticles && clockBg !== "default" && clockBg !== "oled" ? (
+                <ClockParticlesCanvas bg={clockBg} />
+              ) : null}
+
               {isFullscreen && (
-                <button
-                  id="exitFullscreenBtn"
-                  className="clock-fullscreen-exit-btn"
-                  type="button"
-                  onClick={() => void exitFullscreen()}
-                  aria-label="全画面表示を終了"
-                  title="全画面表示を終了 (Esc)"
-                >
-                  <Icon name="x" size={18} />
-                  <span>全画面を終了</span>
-                </button>
+                <>
+                  <button
+                    id="exitFullscreenBtn"
+                    className="clock-fullscreen-exit-btn"
+                    type="button"
+                    onClick={() => void exitFullscreen()}
+                    aria-label="全画面表示を終了"
+                    title="全画面表示を終了 (Esc)"
+                  >
+                    <Icon name="x" size={18} />
+                    <span>全画面を終了</span>
+                  </button>
+
+                  <button
+                    className="clock-fullscreen-quick-btn"
+                    type="button"
+                    onClick={() => setQuickOpen((q) => !q)}
+                    aria-label="背景や動き方を変更"
+                    title="背景や動き方を変更"
+                  >
+                    <span>🎨</span>
+                    <span>カスタマイズ</span>
+                  </button>
+
+                  {quickOpen && (
+                    <div className="clock-quick-menu">
+                      <div className="row row--between" style={{ marginBottom: 12 }}>
+                        <div style={{ fontWeight: 800, fontSize: ".9rem" }}>時計のカスタマイズ</div>
+                        <button
+                          className="icon-btn icon-btn--sm"
+                          type="button"
+                          onClick={() => setQuickOpen(false)}
+                          aria-label="閉じる"
+                        >
+                          <Icon name="x" size={16} />
+                        </button>
+                      </div>
+
+                      <div style={{ fontSize: ".76rem", fontWeight: 700, marginBottom: 6 }}>スタイル</div>
+                      <div className="row" style={{ gap: 6, marginBottom: 12 }}>
+                        {CLOCK_STYLES.map((st) => (
+                          <button
+                            key={st.id}
+                            type="button"
+                            className={`font-option ${clockStyle === st.id ? "is-active" : ""}`}
+                            style={{ flex: 1, padding: "6px 8px", fontSize: ".75rem" }}
+                            onClick={() => {
+                              Store.setSetting("clockStyle", st.id);
+                              sfx("click");
+                            }}
+                          >
+                            <span>{st.icon} {st.name}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      <div style={{ fontSize: ".76rem", fontWeight: 700, marginBottom: 6 }}>背景テーマ</div>
+                      <div className="clock-custom-grid" style={{ marginBottom: 12 }}>
+                        {CLOCK_BGS.map((b) => (
+                          <button
+                            key={b.id}
+                            type="button"
+                            className={`clock-custom-btn ${clockBg === b.id ? "is-active" : ""}`}
+                            onClick={() => {
+                              Store.setSetting("clockBg", b.id);
+                              sfx("click");
+                            }}
+                          >
+                            <span className="clock-custom-btn__preview" style={{ background: b.preview }} />
+                            <span>{b.name}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      <div style={{ fontSize: ".76rem", fontWeight: 700, marginBottom: 6 }}>動き方</div>
+                      <div className="row" style={{ gap: 6, marginBottom: 12 }}>
+                        {CLOCK_MOTIONS.map((m) => (
+                          <button
+                            key={m.id}
+                            type="button"
+                            className={`font-option ${clockMotion === m.id ? "is-active" : ""}`}
+                            style={{ flex: 1, padding: "6px 6px", fontSize: ".72rem" }}
+                            onClick={() => {
+                              Store.setSetting("clockMotion", m.id);
+                              sfx("click");
+                            }}
+                          >
+                            {m.name}
+                          </button>
+                        ))}
+                      </div>
+
+                      <label className="switch" style={{ fontSize: ".78rem" }}>
+                        <input
+                          type="checkbox"
+                          checked={clockParticles}
+                          onChange={(e) => Store.setSetting("clockParticles", e.target.checked)}
+                        />
+                        <span className="switch__track" />
+                        <span className="switch__text">パーティクル演出</span>
+                      </label>
+                    </div>
+                  )}
+                </>
               )}
+
               <div className="clock-stage-inner">
-                <ClockFace clock24h={settings.clock24h} clockSeconds={settings.clockSeconds} />
+                <ClockDisplay
+                  style={clockStyle}
+                  motion={clockMotion}
+                  clock24h={settings.clock24h}
+                  clockSeconds={settings.clockSeconds}
+                />
                 <div className="clock-sub">{clockSub}</div>
               </div>
             </div>
+
             <div className="clock-controls">
               <button
                 id="fullscreenBtn"
@@ -913,13 +1287,101 @@ export function ClockPage() {
             </div>
 
             <div className="clock-settings">
+              {/* Style Selector */}
+              <div className="card card--pad" style={{ marginBottom: 16 }}>
+                <div className="card__head">
+                  <div>
+                    <div className="card__title">
+                      <Icon name="clock" size={18} /> 時計のスタイル
+                    </div>
+                    <div className="card__sub">デジタル・アナログ・フリップから選択</div>
+                  </div>
+                </div>
+                <div className="row row--wrap" style={{ gap: 8 }}>
+                  {CLOCK_STYLES.map((st) => (
+                    <button
+                      key={st.id}
+                      type="button"
+                      className={`font-option ${clockStyle === st.id ? "is-active" : ""}`}
+                      style={{ flex: "1 1 90px", padding: "10px 14px", fontSize: ".88rem" }}
+                      onClick={() => {
+                        Store.setSetting("clockStyle", st.id);
+                        sfx("click");
+                      }}
+                    >
+                      <span style={{ fontSize: "1.1rem" }}>{st.icon}</span>
+                      <span>{st.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Background Theme Selector */}
+              <div className="card card--pad" style={{ marginBottom: 16 }}>
+                <div className="card__head">
+                  <div>
+                    <div className="card__title">
+                      <span>🎨</span> 背景テーマ
+                    </div>
+                    <div className="card__sub">集中しやすいお好みの背景を選べます（全画面でも連動）</div>
+                  </div>
+                </div>
+                <div className="clock-custom-grid">
+                  {CLOCK_BGS.map((b) => (
+                    <button
+                      key={b.id}
+                      type="button"
+                      className={`clock-custom-btn ${clockBg === b.id ? "is-active" : ""}`}
+                      onClick={() => {
+                        Store.setSetting("clockBg", b.id);
+                        sfx("click");
+                      }}
+                    >
+                      <span className="clock-custom-btn__preview" style={{ background: b.preview }} />
+                      <span>{b.name}</span>
+                      <small style={{ fontSize: ".62rem", color: "var(--muted)" }}>{b.desc}</small>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Movement / Animation Selector */}
+              <div className="card card--pad" style={{ marginBottom: 16 }}>
+                <div className="card__head">
+                  <div>
+                    <div className="card__title">
+                      <Icon name="sparkle" size={18} /> 動き方・アニメーション
+                    </div>
+                    <div className="card__sub">針や数字の動作・リラックスエフェクト</div>
+                  </div>
+                </div>
+                <div className="row row--wrap" style={{ gap: 8 }}>
+                  {CLOCK_MOTIONS.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      className={`font-option ${clockMotion === m.id ? "is-active" : ""}`}
+                      style={{ flex: "1 1 120px", padding: "10px 14px", textAlign: "left" }}
+                      onClick={() => {
+                        Store.setSetting("clockMotion", m.id);
+                        sfx("click");
+                      }}
+                    >
+                      <span style={{ fontWeight: 800 }}>{m.name}</span>
+                      <small>{m.desc}</small>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Font & Switches */}
               <div className="card card--pad">
                 <div className="card__head">
                   <div>
                     <div className="card__title">
-                      <Icon name="pen" size={18} /> 時計のフォント
+                      <Icon name="pen" size={18} /> 数字フォント・詳細表示
                     </div>
-                    <div className="card__sub">お好みの数字デザインを選べます</div>
+                    <div className="card__sub">お好みの数字デザインと表示形式</div>
                   </div>
                   <a className="btn btn--ghost btn--sm" href="#/settings">
                     その他の設定
@@ -964,14 +1426,23 @@ export function ClockPage() {
                     <span className="switch__track" />
                     <span className="switch__text">秒を表示</span>
                   </label>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      id="clockPart"
+                      checked={clockParticles}
+                      onChange={(e) => Store.setSetting("clockParticles", e.target.checked)}
+                    />
+                    <span className="switch__track" />
+                    <span className="switch__text">パーティクル演出</span>
+                  </label>
                 </div>
               </div>
             </div>
             <div className="callout" style={{ marginTop: 16 }}>
               <span className="callout__icon">🌙</span>
               <span>
-                時計のデザインや表示形式は自動で保存されます。ダークモードは
-                <a href="#/settings">設定ページ</a>から変更できます。
+                時計のスタイル、背景、動き方は自動で保存されます。全画面表示時も左上の「🎨 カスタマイズ」からいつでも変更できます。
               </span>
             </div>
           </>

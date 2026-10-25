@@ -705,6 +705,382 @@ html[data-motion="reduce"] .digital-clock .colon { animation: none; }
 .font-option.is-active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
 .font-option small { display: block; font-size: .64rem; font-weight: 600; opacity: .7; margin-top: 1px; }
 
+/* ---------- Clock Custom Background Themes ---------- */
+.clock-stage.clock-bg--aurora,
+.clock-stage.is-fullscreen.clock-bg--aurora,
+.clock-stage:fullscreen.clock-bg--aurora {
+  background:
+    radial-gradient(ellipse 90% 80% at 20% -10%, rgba(16, 185, 129, 0.45) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 70% at 85% 10%, rgba(6, 182, 212, 0.4) 0%, transparent 55%),
+    radial-gradient(ellipse 90% 90% at 50% 100%, rgba(99, 102, 241, 0.45) 0%, transparent 65%),
+    linear-gradient(170deg, #06111f 0%, #030811 100%) !important;
+  color: #f0fdfa !important;
+}
+.clock-stage.clock-bg--aurora .digital-clock,
+.clock-stage.clock-bg--aurora .clock-date,
+.clock-stage.clock-bg--aurora .analog-clock,
+.clock-stage.clock-bg--aurora .flip-card {
+  --clock-accent: #2dd4bf;
+  --clock-fg: #f0fdfa;
+  text-shadow: 0 0 24px rgba(45, 212, 191, 0.45);
+}
+
+.clock-stage.clock-bg--starry,
+.clock-stage.is-fullscreen.clock-bg--starry,
+.clock-stage:fullscreen.clock-bg--starry {
+  background:
+    radial-gradient(circle at 50% 30%, rgba(79, 70, 229, 0.25) 0%, transparent 70%),
+    radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.2) 0%, transparent 60%),
+    linear-gradient(180deg, #090a14 0%, #030409 100%) !important;
+  color: #f8fafc !important;
+}
+.clock-stage.clock-bg--starry .digital-clock,
+.clock-stage.clock-bg--starry .clock-date,
+.clock-stage.clock-bg--starry .analog-clock {
+  --clock-accent: #a5b4fc;
+  --clock-fg: #ffffff;
+  text-shadow: 0 0 20px rgba(165, 180, 252, 0.4);
+}
+
+.clock-stage.clock-bg--sunset,
+.clock-stage.is-fullscreen.clock-bg--sunset,
+.clock-stage:fullscreen.clock-bg--sunset {
+  background:
+    radial-gradient(circle at 50% 120%, rgba(245, 158, 11, 0.5) 0%, transparent 65%),
+    radial-gradient(circle at 10% 20%, rgba(225, 29, 72, 0.35) 0%, transparent 60%),
+    linear-gradient(155deg, #1b0a24 0%, #2f1235 45%, #0f0717 100%) !important;
+  color: #fff7ed !important;
+}
+.clock-stage.clock-bg--sunset .digital-clock,
+.clock-stage.clock-bg--sunset .clock-date,
+.clock-stage.clock-bg--sunset .analog-clock {
+  --clock-accent: #fbbf24;
+  --clock-fg: #fff7ed;
+  text-shadow: 0 0 24px rgba(251, 191, 36, 0.4);
+}
+
+.clock-stage.clock-bg--cyber,
+.clock-stage.is-fullscreen.clock-bg--cyber,
+.clock-stage:fullscreen.clock-bg--cyber {
+  background:
+    linear-gradient(rgba(6, 182, 212, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.15) 0%, transparent 70%),
+    #05050e !important;
+  background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100% !important;
+  color: #00f5ff !important;
+}
+.clock-stage.clock-bg--cyber .digital-clock,
+.clock-stage.clock-bg--cyber .clock-date,
+.clock-stage.clock-bg--cyber .analog-clock {
+  --clock-accent: #ec4899;
+  --clock-fg: #00f5ff;
+  text-shadow: 0 0 22px rgba(0, 245, 255, 0.65), 0 0 45px rgba(236, 72, 153, 0.4);
+}
+
+.clock-stage.clock-bg--cafe,
+.clock-stage.is-fullscreen.clock-bg--cafe,
+.clock-stage:fullscreen.clock-bg--cafe {
+  background:
+    radial-gradient(circle at 50% 20%, rgba(217, 119, 6, 0.22) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(180, 83, 9, 0.15) 0%, transparent 50%),
+    linear-gradient(155deg, #1c1511 0%, #2b1d16 50%, #17110e 100%) !important;
+  color: #fef3c7 !important;
+}
+.clock-stage.clock-bg--cafe .digital-clock,
+.clock-stage.clock-bg--cafe .clock-date,
+.clock-stage.clock-bg--cafe .analog-clock {
+  --clock-accent: #f59e0b;
+  --clock-fg: #fef3c7;
+  text-shadow: 0 0 16px rgba(245, 158, 11, 0.3);
+}
+
+.clock-stage.clock-bg--oled,
+.clock-stage.is-fullscreen.clock-bg--oled,
+.clock-stage:fullscreen.clock-bg--oled {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+.clock-stage.clock-bg--oled .digital-clock,
+.clock-stage.clock-bg--oled .clock-date,
+.clock-stage.clock-bg--oled .analog-clock {
+  --clock-accent: #e2e8f0;
+  --clock-fg: #ffffff;
+  text-shadow: none;
+}
+
+.clock-stage.clock-bg--mint,
+.clock-stage.is-fullscreen.clock-bg--mint,
+.clock-stage:fullscreen.clock-bg--mint {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(52, 211, 153, 0.3) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.25) 0%, transparent 55%),
+    linear-gradient(160deg, #0a2620 0%, #061e19 100%) !important;
+  color: #ecfdf5 !important;
+}
+.clock-stage.clock-bg--mint .digital-clock,
+.clock-stage.clock-bg--mint .clock-date,
+.clock-stage.clock-bg--mint .analog-clock {
+  --clock-accent: #34d399;
+  --clock-fg: #ecfdf5;
+  text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+}
+
+/* ---------- Movement Styles ---------- */
+.clock-motion--pulse .clock-stage-inner {
+  animation: clockPulse 2.4s ease-in-out infinite;
+}
+@keyframes clockPulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.015); filter: brightness(1.12); }
+}
+
+.clock-motion--float .clock-stage-inner {
+  animation: clockFloat 5s ease-in-out infinite;
+}
+@keyframes clockFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+/* ---------- Analog Clock Face ---------- */
+.analog-clock-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.analog-clock {
+  position: relative;
+  width: min(280px, 68vw);
+  height: min(280px, 68vw);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  border: 4px solid color-mix(in srgb, var(--clock-accent, var(--accent)) 45%, var(--border));
+  box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.35), inset 0 2px 16px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  margin: 0 auto;
+}
+.clock-stage.is-fullscreen .analog-clock {
+  width: min(440px, 62vmin);
+  height: min(440px, 62vmin);
+  border-width: 6px;
+}
+.analog-clock__num {
+  position: absolute;
+  font-size: clamp(0.95rem, 3.2vw, 1.45rem);
+  font-weight: 800;
+  color: var(--clock-fg, var(--text));
+  transform: translate(-50%, -50%);
+  user-select: none;
+}
+.analog-clock__hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform-origin: 50% 100%;
+  border-radius: 999px;
+}
+.analog-clock__hand--hour {
+  width: 6px;
+  height: 28%;
+  background: var(--clock-fg, var(--text));
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.analog-clock__hand--minute {
+  width: 4px;
+  height: 38%;
+  background: var(--clock-fg, var(--text));
+  z-index: 3;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+.analog-clock__hand--second {
+  width: 2px;
+  height: 44%;
+  background: var(--clock-accent, var(--accent));
+  z-index: 4;
+  box-shadow: 0 0 8px var(--clock-accent, var(--accent));
+}
+.analog-clock__hand--second.is-tick {
+  transition: transform 0.16s cubic-bezier(0.2, 2.2, 0.4, 0.9);
+}
+.analog-clock__pivot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--clock-accent, var(--accent));
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  border: 2px solid #ffffff;
+}
+
+/* ---------- Flip Clock Face ---------- */
+.flip-clock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 18px);
+  position: relative;
+  z-index: 1;
+}
+.flip-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.flip-cards {
+  display: flex;
+  gap: 4px;
+}
+.flip-card {
+  position: relative;
+  width: clamp(38px, 9vw, 84px);
+  height: clamp(56px, 13vw, 120px);
+  background: #111827;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: clamp(2rem, 7.5vw, 4.8rem);
+  font-weight: 800;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: "Orbitron", monospace;
+  overflow: hidden;
+  user-select: none;
+}
+.clock-stage.is-fullscreen .flip-card {
+  width: clamp(55px, 12vw, 130px);
+  height: clamp(80px, 17vw, 190px);
+  font-size: clamp(2.8rem, 10vw, 7.5rem);
+}
+.flip-card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: rgba(0, 0, 0, 0.75);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12);
+  z-index: 2;
+}
+.flip-group__label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.flip-colon {
+  font-size: clamp(1.8rem, 6vw, 3.8rem);
+  font-weight: 800;
+  color: var(--clock-accent, var(--accent));
+  line-height: 1;
+  margin-bottom: 18px;
+  animation: blink 2s steps(1) infinite;
+}
+
+/* ---------- Particles Canvas ---------- */
+.clock-particles-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- Quick Customizer on Fullscreen ---------- */
+.clock-fullscreen-quick-btn {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top, 16px));
+  left: max(16px, env(safe-area-inset-left, 16px));
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+}
+.clock-fullscreen-quick-btn:hover {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.clock-quick-menu {
+  position: absolute;
+  top: max(70px, calc(env(safe-area-inset-top, 16px) + 54px));
+  left: max(16px, env(safe-area-inset-left, 16px));
+  max-width: 360px;
+  width: calc(100vw - 32px);
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  z-index: 1001;
+  text-align: left;
+}
+.clock-custom-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+}
+.clock-custom-btn {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.16s var(--ease);
+}
+.clock-custom-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.clock-custom-btn.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.clock-custom-btn__preview {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
 .timer-display {
   position: relative;
   font-family: "Orbitron", "Share Tech Mono", monospace;

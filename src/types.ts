@@ -18,6 +18,20 @@ export type ClockFontId =
   | "pixel"
   | "manrope";
 
+export type ClockBgId =
+  | "default"
+  | "aurora"
+  | "starry"
+  | "sunset"
+  | "cyber"
+  | "cafe"
+  | "oled"
+  | "mint";
+
+export type ClockStyleId = "digital" | "analog" | "flip";
+
+export type ClockMotionId = "smooth" | "tick" | "pulse" | "float";
+
 export type QuizType = "vocab" | "grammar" | "reading" | "listening" | "mock" | "mixed";
 
 /* ---------------- Content ---------------- */
@@ -196,6 +210,10 @@ export interface Settings {
   clockFont: ClockFontId;
   clock24h: boolean;
   clockSeconds: boolean;
+  clockBg?: ClockBgId;
+  clockStyle?: ClockStyleId;
+  clockMotion?: ClockMotionId;
+  clockParticles?: boolean;
   timerSound: boolean;
   autoNext: boolean;
   showFurigana: boolean;

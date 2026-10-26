@@ -688,3 +688,307 @@ html[data-theme="dark"] .quiz__combo { background: #35230c; border-color: #4a301
   .quiz__footer .btn { width: 100%; }
   .quiz__hint { text-align: center; }
 }
+
+/* ============================================================
+   Cloud Sync & Icon Troubleshooting Styles
+   ============================================================ */
+
+.sync-indicator-btn {
+  position: relative;
+}
+
+.sync-indicator-dot {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--surface);
+}
+
+.sync-indicator-dot.is-synced {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+}
+
+.sync-indicator-dot.is-syncing {
+  background: #3b82f6;
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.7);
+  animation: pulseSync 1s infinite alternate;
+}
+
+.sync-indicator-dot.is-error {
+  background: #ef4444;
+}
+
+.sync-indicator-dot.is-off {
+  background: var(--muted);
+  opacity: 0.5;
+}
+
+@keyframes pulseSync {
+  from { transform: scale(0.9); opacity: 0.7; }
+  to { transform: scale(1.2); opacity: 1; }
+}
+
+.drawer__sync-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 6px 0 10px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.15s ease;
+}
+
+.drawer__sync-status:hover {
+  background: var(--surface-3, var(--border));
+}
+
+.drawer__sync-status .sync-indicator-dot {
+  position: static;
+  width: 9px;
+  height: 9px;
+  border: none;
+}
+
+/* Cloud Sync Section */
+.cloud-sync-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  margin-top: 12px;
+}
+
+.cloud-sync-card--connected {
+  border-color: color-mix(in srgb, #10b981 35%, var(--border));
+  background: linear-gradient(180deg, color-mix(in srgb, #10b981 4%, var(--surface)) 0%, var(--surface) 100%);
+}
+
+.cloud-sync-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.cloud-sync-badge-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #10b981 14%, transparent);
+  color: #10b981;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.cloud-sync-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseSync 1.2s infinite alternate;
+}
+
+.cloud-sync-key-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+
+.cloud-sync-key-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.cloud-sync-key-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cloud-sync-key-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.cloud-sync-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn--danger-text {
+  color: var(--danger) !important;
+}
+
+.btn--danger-text:hover {
+  background: color-mix(in srgb, var(--danger) 10%, transparent) !important;
+}
+
+.cloud-sync-qr-pane {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.cloud-sync-qr-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.cloud-sync-qr-img-wrap {
+  display: inline-block;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.cloud-sync-qr-img-wrap img {
+  display: block;
+}
+
+/* Disconnected setup cards */
+.cloud-sync-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cloud-sync-banner__icon {
+  font-size: 2rem;
+  flex: none;
+}
+
+.cloud-sync-banner__title {
+  font-weight: 800;
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+
+.cloud-sync-banner__desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.cloud-sync-setup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 600px) {
+  .cloud-sync-setup-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cloud-sync-setup-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cloud-sync-step-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.cloud-sync-setup-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.cloud-sync-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.cloud-sync-input-row input {
+  flex: 1;
+}
+
+/* Icon Troubleshooting Pane */
+.icon-troubleshoot-pane {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 10px;
+}
+
+.icon-troubleshoot-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.icon-troubleshoot-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.icon-step-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.icon-step-num {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.icon-step-content strong {
+  font-size: 0.88rem;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.icon-step-content p {
+  line-height: 1.4;
+}
+

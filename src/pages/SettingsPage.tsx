@@ -13,6 +13,7 @@ import { APP_VERSION } from "../lib/constants";
 import { confirmDialog } from "../components/ConfirmProvider";
 import { Icon } from "../components/Icon";
 import type { IconName } from "../components/Icon";
+import { CloudSyncSection } from "../components/CloudSyncSection";
 
 const THEMES: { id: ThemePref; label: string; icon: IconName; desc: string }[] = [
   { id: "light", label: "ライト", icon: "sun", desc: "明るい背景" },
@@ -564,6 +565,9 @@ export function SettingsPage() {
         </div>
       </section>
 
+      {/* ---------------- Cloud Sync ---------------- */}
+      <CloudSyncSection />
+
       {/* ---------------- Data ---------------- */}
       <section className="settings-group">
         <div className="settings-group__head">
@@ -663,7 +667,7 @@ export function SettingsPage() {
         </div>
       </section>
 
-      <p className="tiny muted center">変更内容はこのブラウザに自動保存されます。別の端末とは同期されません。</p>
+      <p className="tiny muted center">変更内容はこのブラウザに自動保存されます。同期キーを設定するとPCとスマホ間で完全自動同期されます。</p>
     </div>
   );
 }

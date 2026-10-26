@@ -10,6 +10,7 @@ import { sfx, toast } from "./lib/ui";
 import { APP_VERSION } from "./lib/constants";
 import { AppContext } from "./lib/app-context";
 import type { AppApi } from "./lib/app-context";
+import { CloudSync, getSyncInfo, type SyncInfo } from "./lib/cloud-sync";
 import { Icon } from "./components/Icon";
 import { Modal } from "./components/Modal";
 import { ToastHost } from "./components/ToastHost";
@@ -148,6 +149,14 @@ export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [gradePickerOpen, setGradePickerOpen] = useState(false);
   const [quiz, setQuiz] = useState<QuizConfig | null>(null);
+  const [syncInfo, setSyncInfo] = useState<SyncInfo>(getSyncInfo());
+
+  useEffect(() => {
+    CloudSync.init();
+    return CloudSync.subscribe((info) => {
+      setSyncInfo(info);
+    });
+  }, []);
 
   const drawerRef = useRef<HTMLElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
@@ -336,6 +345,32 @@ export default function App() {
                 <span id="topXpVal">{Number(state.xp || 0).toLocaleString()}</span>
                 <span className="chip__unit">XP</span>
               </div>
+              <a
+                className="icon-btn sync-indicator-btn"
+                href="#/settings"
+                title={
+                  syncInfo.syncKey
+                    ? syncInfo.status === "syncing"
+                      ? "クラウド同期中..."
+                      : `クラウド自動同期中（キー: ${syncInfo.syncKey}）`
+                    : "クラウド自動同期（クリックして設定）"
+                }
+                aria-label="クラウド自動同期"
+                id="topSync"
+              >
+                <Icon name="cloud" size={19} className={syncInfo.status === "syncing" ? "pulse" : ""} />
+                {syncInfo.syncKey && (
+                  <span
+                    className={`sync-indicator-dot ${
+                      syncInfo.status === "syncing"
+                        ? "is-syncing"
+                        : syncInfo.status === "error"
+                        ? "is-error"
+                        : "is-synced"
+                    }`}
+                  />
+                )}
+              </a>
               <a className="icon-btn" href="#/settings" aria-label="設定" id="topSettings">
                 <Icon name="settings" size={20} />
               </a>
@@ -403,6 +438,21 @@ export default function App() {
               <div className="drawer__tip" id="drawerTip">
                 {tip}
               </div>
+              <a
+                className="drawer__sync-status"
+                href="#/settings"
+                onClick={() => closeDrawer(false)}
+                title="クラウド同期設定"
+              >
+                <span
+                  className={`sync-indicator-dot ${
+                    syncInfo.syncKey ? (syncInfo.status === "syncing" ? "is-syncing" : "is-synced") : "is-off"
+                  }`}
+                />
+                <span className="tiny">
+                  {syncInfo.syncKey ? `クラウド同期: ${syncInfo.syncKey}` : "☁️ クラウド自動同期を設定"}
+                </span>
+              </a>
               <div className="drawer__ver">EikenQuest v{APP_VERSION}</div>
             </div>
           </aside>

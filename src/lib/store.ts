@@ -147,13 +147,27 @@ export function getRevision(): number {
   return revision;
 }
 
+let onSaveHook: (() => void) | null = null;
+
+export function setOnSaveHook(fn: (() => void) | null): void {
+  onSaveHook = fn;
+}
+
 function save(): void {
   try {
+    state.lastModified = Date.now();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (err) {
     console.warn("[EikenQuest] save failed", err);
   }
   emit();
+  if (onSaveHook) {
+    try {
+      onSaveHook();
+    } catch (err) {
+      console.warn("[EikenQuest] onSaveHook error", err);
+    }
+  }
 }
 
 function rollToday(): AppState["today"] {
@@ -539,6 +553,18 @@ export const Store = {
     save();
     applyTheme();
   },
+  importDirect(incoming: AppState): void {
+    if (!incoming || typeof incoming !== "object" || !("profile" in incoming)) return;
+    state = incoming;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (err) {
+      console.warn("[EikenQuest] importDirect save error", err);
+    }
+    emit();
+    applyTheme();
+  },
+  setOnSaveHook,
 };
 
 applyTheme();

@@ -221,6 +221,10 @@ export interface Settings {
   autoNext: boolean;
   showFurigana: boolean;
   pomo: PomodoroSettings;
+  syncKey?: string;
+  autoSync?: boolean;
+  lastSyncedAt?: string;
+  deviceName?: string;
 }
 
 export interface Profile {
@@ -335,6 +339,7 @@ export interface AppState {
   badges: string[];
   goalDays: number;
   createdAt: number;
+  lastModified?: number;
 }
 
 /* ---------------- Store helpers ---------------- */

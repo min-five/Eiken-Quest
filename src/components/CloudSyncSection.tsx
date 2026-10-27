@@ -9,7 +9,6 @@ export function CloudSyncSection() {
   const [inputKey, setInputKey] = useState("");
   const [showQr, setShowQr] = useState(false);
   const [isSyncingNow, setIsSyncingNow] = useState(false);
-  const [showIconHelp, setShowIconHelp] = useState(false);
 
   useEffect(() => {
     return CloudSync.subscribe((info) => {
@@ -87,11 +86,6 @@ export function CloudSyncSection() {
   const qrImageUrl = syncUrl
     ? `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(syncUrl)}&margin=10`
     : "";
-
-  const openFreshPwa = () => {
-    const freshUrl = `${window.location.origin}${window.location.pathname}?pwa_icon_fix=${Date.now()}`;
-    window.location.href = freshUrl;
-  };
 
   return (
     <section className="settings-group cloud-sync-group">
@@ -236,80 +230,6 @@ export function CloudSyncSection() {
                 >
                   連携
                 </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ---------------- Mobile Icon Troubleshooting ---------------- */}
-      <div className="setting-row" style={{ marginTop: 12 }}>
-        <div className="setting-row__body">
-          <div className="setting-row__title">📱 スマホのホーム画面アイコンについて</div>
-          <div className="setting-row__desc">
-            Safariのキャッシュによってアイコンが「紫色のE」になってしまう場合の解決方法。
-          </div>
-        </div>
-        <div className="setting-row__control">
-          <button
-            type="button"
-            className="btn btn--outline btn--sm"
-            onClick={() => setShowIconHelp(!showIconHelp)}
-          >
-            <Icon name="help" size={14} />
-            {showIconHelp ? "閉じる" : "解決手順を見る"}
-          </button>
-        </div>
-      </div>
-
-      {showIconHelp && (
-        <div className="icon-troubleshoot-pane">
-          <div className="icon-troubleshoot-title">
-            🎯 アイコンを確実に公式デザインにする方法
-          </div>
-          <p className="tiny muted" style={{ marginBottom: 12 }}>
-            iPhone Safariは、一度保存したアイコンキャッシュを強力に保持する仕様があります。以下のいずれかで確実に反映されます：
-          </p>
-
-          <div className="icon-troubleshoot-steps">
-            <div className="icon-step-item">
-              <div className="icon-step-num">方法 1（最速）</div>
-              <div className="icon-step-content">
-                <strong>キャッシュ回避リンクで開き直す</strong>
-                <p className="tiny muted">
-                  Safariに新しいページとして認識させ、最新の王冠アプリアイコンを読み込ませます。
-                </p>
-                <button
-                  type="button"
-                  className="btn btn--primary btn--sm"
-                  style={{ marginTop: 6 }}
-                  onClick={openFreshPwa}
-                >
-                  <Icon name="external" size={14} /> キャッシュ回避リンクで開く
-                </button>
-                <div className="tiny muted" style={{ marginTop: 4 }}>
-                  開いた後、画面下の「共有（四角と上矢印）」→「ホーム画面に追加」してください。
-                </div>
-              </div>
-            </div>
-
-            <div className="icon-step-item">
-              <div className="icon-step-num">方法 2</div>
-              <div className="icon-step-content">
-                <strong>Safariの「プライベートブラウズ」で開く</strong>
-                <p className="tiny muted">
-                  Safariのタブ一覧で「プライベート」に切り替えて本サイトを開き、「ホーム画面に追加」すると、古いキャッシュを無視して綺麗なアイコンで登録されます。
-                </p>
-              </div>
-            </div>
-
-            <div className="icon-step-item">
-              <div className="icon-step-num">方法 3</div>
-              <div className="icon-step-content">
-                <strong>iOSのショートカットアプリで作成（100%確実）</strong>
-                <p className="tiny muted">
-                  iPhoneの「ショートカット」アプリで「Webページを開く」を作成し、アイコンにお好きな画像（EikenQuestのアイコン）を設定してホーム画面に追加すると、Safariの制約を完全に回避できます。
-                </p>
               </div>
             </div>
           </div>

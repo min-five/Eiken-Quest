@@ -486,6 +486,17 @@ export function SettingsPage() {
             onChange={(checked) => Store.setSetting("clockSeconds", checked)}
           />
         </SettingRow>
+        <SettingRow
+          title="画面スリープ防止（常時点灯）"
+          desc="学習中や時計・タイマー表示中に、端末の画面が自動で暗くなったり消灯・ロックされるのを防ぎます。"
+        >
+          <Toggle
+            id="setKeepAwake"
+            checked={set.keepAwake !== false}
+            label="画面スリープ防止"
+            onChange={(checked) => Store.setSetting("keepAwake", checked)}
+          />
+        </SettingRow>
         <div className="setting-row" style={{ display: "block" }}>
           <div className="setting-row__body">
             <div className="setting-row__title">ポモドーロの初期値</div>

@@ -1241,6 +1241,16 @@ export function ClockPage() {
               <span className="switch__track" />
               <span className="switch__text">パーティクル演出</span>
             </label>
+
+            <label className="switch" style={{ fontSize: ".78rem", marginTop: 8 }}>
+              <input
+                type="checkbox"
+                checked={settings.keepAwake !== false}
+                onChange={(e) => Store.setSetting("keepAwake", e.target.checked)}
+              />
+              <span className="switch__track" />
+              <span className="switch__text">☀️ 画面スリープ防止（常時点灯）</span>
+            </label>
           </div>
         )}
       </>

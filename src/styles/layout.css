@@ -215,16 +215,22 @@ html[data-theme="dark"] .streak-chip { background: linear-gradient(120deg, #2b1a
 
 /* ---- Bottom tab bar (mobile) ---- */
 .tabbar {
-  position: sticky; bottom: 0; z-index: 50;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 90;
   display: none;
   justify-content: space-around;
   align-items: stretch;
   height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
   padding-bottom: env(safe-area-inset-bottom, 0px);
   background: var(--surface-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
 }
 .tabbar a {
   flex: 1;
@@ -247,7 +253,7 @@ html[data-theme="dark"] .streak-chip { background: linear-gradient(120deg, #2b1a
 
 @media (max-width: 860px) {
   .tabbar { display: flex; }
-  .view { padding-bottom: 40px; }
+  .view { padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 32px); }
   .topSettings { display: none; }
   #topSettings { display: none; }
   .xp-chip .chip__unit { display: none; }

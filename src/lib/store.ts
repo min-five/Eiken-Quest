@@ -14,6 +14,7 @@ import type {
   Settings,
   WordProgress,
 } from "../types";
+import { WakeLockManager } from "./wake-lock";
 
 const STORAGE_KEY = "eikenquest.state.v1";
 
@@ -41,6 +42,7 @@ const DEFAULT_STATE: AppState = {
     timerSound: true,
     autoNext: true,
     showFurigana: true,
+    keepAwake: true,
     pomo: { focus: 25, break: 5, long: 15, cycles: 4, auto: true },
   },
   xp: 0,
@@ -523,6 +525,7 @@ export const Store = {
   setSetting<K extends keyof Settings>(key: K, value: Settings[K]): void {
     state.settings[key] = value;
     if (key === "theme" || key === "accent" || key === "fontSize" || key === "motion") applyTheme();
+    if (key === "keepAwake") WakeLockManager.setEnabled(value !== false).catch(() => {});
     save();
   },
   setProfile(patch: Partial<AppState["profile"]>): void {
@@ -569,5 +572,10 @@ export const Store = {
 
 applyTheme();
 rollToday();
+
+if (typeof window !== "undefined" && state.settings.keepAwake !== false) {
+  // Request wake lock after interaction or initial load
+  WakeLockManager.enable().catch(() => {});
+}
 
 export { DEFAULT_STATE, STORAGE_KEY };

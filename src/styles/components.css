@@ -947,48 +947,4 @@ html[data-theme="dark"] .quiz__combo { background: #35230c; border-color: #4a301
   flex: 1;
 }
 
-/* Icon Troubleshooting Pane */
-.icon-troubleshoot-pane {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px;
-  margin-top: 10px;
-}
-
-.icon-troubleshoot-title {
-  font-weight: 800;
-  font-size: 0.95rem;
-  margin-bottom: 6px;
-}
-
-.icon-troubleshoot-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.icon-step-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px 14px;
-}
-
-.icon-step-num {
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: var(--accent);
-  margin-bottom: 2px;
-}
-
-.icon-step-content strong {
-  font-size: 0.88rem;
-  display: block;
-  margin-bottom: 3px;
-}
-
-.icon-step-content p {
-  line-height: 1.4;
-}
 

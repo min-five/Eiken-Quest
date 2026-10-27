@@ -225,6 +225,7 @@ export interface Settings {
   autoSync?: boolean;
   lastSyncedAt?: string;
   deviceName?: string;
+  keepAwake?: boolean;
 }
 
 export interface Profile {

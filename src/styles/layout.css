@@ -261,24 +261,39 @@ html[data-theme="dark"] .streak-chip { background: linear-gradient(120deg, #2b1a
 }
 
 @media (max-width: 560px) {
-  :root { --topbar-h: 60px; }
-  .brand__text { font-size: 1.06rem; }
-  .brand__mark { width: 30px; height: 30px; }
-  .streak-chip, .xp-chip { padding: 0 9px; height: 32px; font-size: .78rem; }
-  .topbar__right { gap: 6px; }
+  :root { --topbar-h: 58px; }
+  .topbar {
+    padding-left: max(8px, env(safe-area-inset-left, 8px));
+    padding-right: max(8px, env(safe-area-inset-right, 8px));
+    gap: 6px;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .topbar__left { gap: 6px; flex-shrink: 0; }
+  .topbar__right { gap: 4px; flex-shrink: 0; }
+  .menu-btn { margin-left: 0; width: 36px; height: 36px; }
+  .brand { gap: 6px; }
+  .brand__mark { width: 28px; height: 28px; }
+  .brand__text { display: none; }
+  .grade-chip { height: 32px; padding: 0 8px; font-size: .8rem; gap: 5px; }
+  .grade-chip > svg { width: 12px; height: 12px; }
+  .streak-chip, .xp-chip { padding: 0 7px; height: 32px; font-size: .76rem; gap: 4px; }
+  .icon-btn { width: 36px; height: 36px; }
   .view { padding-top: 18px; }
-  .icon-btn { width: 38px; height: 38px; }
 }
 
-@media (max-width: 400px) {
-  .topbar { padding-left: 12px; padding-right: 12px; }
-  .topbar__left, .topbar__right { gap: 4px; }
-  .brand { gap: 6px; }
-  .brand__text { font-size: .98rem; }
-  .streak-chip, .xp-chip { padding: 0 8px; font-size: .76rem; }
-  .grade-chip { padding: 0 9px; }
+@media (max-width: 360px) {
+  .topbar {
+    padding-left: max(4px, env(safe-area-inset-left, 4px));
+    padding-right: max(4px, env(safe-area-inset-right, 4px));
+    gap: 3px;
+  }
+  .topbar__left, .topbar__right { gap: 3px; }
+  .grade-chip { padding: 0 6px; font-size: .74rem; }
   .grade-chip > svg { display: none; }
-  .grade-chip__dot { width: 7px; height: 7px; }
+  .streak-chip, .xp-chip { padding: 0 5px; font-size: .72rem; }
 }
 
 @media (min-width: 861px) {

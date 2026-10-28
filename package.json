@@ -1,7 +1,7 @@
 {
   "name": "eikenquest",
   "private": true,
-  "version": "1.3.2",
+  "version": "1.3.3",
   "type": "module",
   "description": "EikenQuest — 英検5級〜1級 学習プラットフォーム (React + TypeScript)",
   "scripts": {

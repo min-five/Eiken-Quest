@@ -1251,6 +1251,16 @@ export function ClockPage() {
               <span className="switch__track" />
               <span className="switch__text">☀️ 画面スリープ防止（常時点灯）</span>
             </label>
+
+            <label className="switch" style={{ fontSize: ".78rem", marginTop: 8 }}>
+              <input
+                type="checkbox"
+                checked={!!settings.ecoMode}
+                onChange={(e) => Store.setSetting("ecoMode", e.target.checked)}
+              />
+              <span className="switch__track" />
+              <span className="switch__text">🌱 省エネモード（バッテリー節約）</span>
+            </label>
           </div>
         )}
       </>

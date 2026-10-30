@@ -497,6 +497,17 @@ export function SettingsPage() {
             onChange={(checked) => Store.setSetting("keepAwake", checked)}
           />
         </SettingRow>
+        <SettingRow
+          title="省エネモード（バッテリー節約）"
+          desc="アニメーションや半透明効果を抑え、OLED向け真黒（ピュアブラック）表示に切り替えてバッテリー消費を大幅に削減します。"
+        >
+          <Toggle
+            id="setEcoMode"
+            checked={!!set.ecoMode}
+            label="省エネモード"
+            onChange={(checked) => Store.setSetting("ecoMode", checked)}
+          />
+        </SettingRow>
         <div className="setting-row" style={{ display: "block" }}>
           <div className="setting-row__body">
             <div className="setting-row__title">ポモドーロの初期値</div>

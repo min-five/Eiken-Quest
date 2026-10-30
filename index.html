@@ -14,7 +14,7 @@
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="EikenQuest" />
 
   <!-- ファビコンやマニフェスト -->
@@ -34,7 +34,7 @@
     /* Force WebClips / Home Screen PWA to reload if a newer build version is deployed */
     (function () {
       try {
-        var APP_VER = "1.3.3";
+        var APP_VER = "1.3.4";
         var savedVer = localStorage.getItem("eikenquest.cached_version");
         if (savedVer && savedVer !== APP_VER) {
           localStorage.setItem("eikenquest.cached_version", APP_VER);
@@ -45,14 +45,22 @@
 
         /* Apply the saved theme before first paint to avoid a light-theme flash. */
         var raw = localStorage.getItem("eikenquest.state.v1");
-        var pref = raw ? ((JSON.parse(raw) || {}).settings || {}).theme : "system";
+        var st = raw ? JSON.parse(raw) : null;
+        var sSet = (st && st.settings) || {};
+        var isEco = !!sSet.ecoMode;
+        var pref = sSet.theme || "system";
         var dark =
+          isEco ||
           pref === "dark" ||
           (pref === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
         document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        if (isEco) {
+          document.documentElement.setAttribute("data-eco", "true");
+        }
       } catch (e) {
         /* keep default */
       }
+    })();
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />

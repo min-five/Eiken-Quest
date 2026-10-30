@@ -136,3 +136,35 @@ html[data-motion="reduce"] *::after {
     scroll-behavior: auto !important;
   }
 }
+
+/* Eco Mode (Battery & GPU Saver, OLED Pure Black) */
+html[data-eco="true"] {
+  --bg: #000000 !important;
+  --bg-tint: #000000 !important;
+  --surface: #0a0a0a !important;
+  --surface-2: #121212 !important;
+  --surface-3: #181818 !important;
+  --surface-glass: rgba(0, 0, 0, 0.95) !important;
+  --text: #f0f4f8 !important;
+  --text-2: #c0c8d4 !important;
+  --muted: #808c9e !important;
+  --border: #20242c !important;
+  --border-strong: #303644 !important;
+  --shadow-xs: none !important;
+  --shadow-sm: none !important;
+  --shadow-md: none !important;
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.9) !important;
+  --shadow-glow: none !important;
+  color-scheme: dark !important;
+}
+
+html[data-eco="true"] *,
+html[data-eco="true"] *::before,
+html[data-eco="true"] *::after {
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important;
+  scroll-behavior: auto !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}

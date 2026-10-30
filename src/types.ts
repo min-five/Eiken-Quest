@@ -226,6 +226,7 @@ export interface Settings {
   lastSyncedAt?: string;
   deviceName?: string;
   keepAwake?: boolean;
+  ecoMode?: boolean;
 }
 
 export interface Profile {

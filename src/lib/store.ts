@@ -43,6 +43,7 @@ const DEFAULT_STATE: AppState = {
     autoNext: true,
     showFurigana: true,
     keepAwake: true,
+    ecoMode: false,
     pomo: { focus: 25, break: 5, long: 15, cycles: 4, auto: true },
   },
   xp: 0,
@@ -192,12 +193,19 @@ function resolvedTheme(): "light" | "dark" {
 
 function applyTheme(): void {
   const root = document.documentElement;
-  root.setAttribute("data-theme", resolvedTheme());
+  const isEco = !!state.settings.ecoMode;
+  const isDark = isEco || resolvedTheme() === "dark";
+
+  root.setAttribute("data-theme", isDark ? "dark" : "light");
   root.setAttribute("data-accent", state.settings.accent || "indigo");
   root.setAttribute("data-fontsize", state.settings.fontSize || "normal");
-  root.setAttribute("data-motion", state.settings.motion || "full");
+  root.setAttribute("data-motion", isEco ? "reduce" : (state.settings.motion || "full"));
+  root.setAttribute("data-eco", isEco ? "true" : "false");
+
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", resolvedTheme() === "dark" ? "#080b14" : "#4f46e5");
+  if (meta) {
+    meta.setAttribute("content", isEco ? "#000000" : (isDark ? "#080b14" : "#4f46e5"));
+  }
 }
 
 if (typeof window !== "undefined" && window.matchMedia) {
@@ -524,7 +532,7 @@ export const Store = {
   },
   setSetting<K extends keyof Settings>(key: K, value: Settings[K]): void {
     state.settings[key] = value;
-    if (key === "theme" || key === "accent" || key === "fontSize" || key === "motion") applyTheme();
+    if (key === "theme" || key === "accent" || key === "fontSize" || key === "motion" || key === "ecoMode") applyTheme();
     if (key === "keepAwake") WakeLockManager.setEnabled(value !== false).catch(() => {});
     save();
   },

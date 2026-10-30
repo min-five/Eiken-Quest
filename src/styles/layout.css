@@ -11,8 +11,12 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  height: var(--topbar-h);
-  padding: 0 clamp(14px, 3vw, 32px);
+  height: calc(var(--topbar-h) + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: 0;
+  padding-left: clamp(14px, 3vw, 32px);
+  padding-right: clamp(14px, 3vw, 32px);
+  box-sizing: border-box;
   background: var(--surface-glass);
   backdrop-filter: saturate(160%) blur(16px);
   -webkit-backdrop-filter: saturate(160%) blur(16px);
@@ -109,7 +113,8 @@ html[data-theme="dark"] .streak-chip { background: linear-gradient(120deg, #2b1a
   z-index: 90;
   width: min(var(--drawer-w), 88vw);
   display: flex; flex-direction: column;
-  padding: 18px 16px 16px;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
   background: var(--surface);
   border-right: 1px solid var(--border);
   box-shadow: var(--shadow-lg);
@@ -263,6 +268,9 @@ html[data-theme="dark"] .streak-chip { background: linear-gradient(120deg, #2b1a
 @media (max-width: 560px) {
   :root { --topbar-h: 58px; }
   .topbar {
+    height: calc(var(--topbar-h) + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 0;
     padding-left: max(8px, env(safe-area-inset-left, 8px));
     padding-right: max(8px, env(safe-area-inset-right, 8px));
     gap: 6px;
@@ -286,6 +294,9 @@ html[data-theme="dark"] .streak-chip { background: linear-gradient(120deg, #2b1a
 
 @media (max-width: 360px) {
   .topbar {
+    height: calc(var(--topbar-h) + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 0;
     padding-left: max(4px, env(safe-area-inset-left, 4px));
     padding-right: max(4px, env(safe-area-inset-right, 4px));
     gap: 3px;
